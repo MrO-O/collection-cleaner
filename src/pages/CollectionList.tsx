@@ -114,11 +114,11 @@ export function CollectionList() {
       </div>
 
       <section className="rounded-lg border border-stone-200 bg-white p-4">
-        <div className="grid gap-3 lg:grid-cols-[minmax(220px,1.6fr)_repeat(5,minmax(140px,1fr))]">
-          <label className="space-y-1">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(220px,1.6fr)_repeat(5,minmax(0,1fr))]">
+          <label className="min-w-0 space-y-1">
             <span className="text-xs font-semibold uppercase text-ink-500">Search</span>
             <input
-              className="h-10 w-full rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
+              className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
               onChange={(event) => updateFilter('query', event.target.value)}
               placeholder="Title, URL, or tag"
               type="search"
@@ -152,10 +152,10 @@ export function CollectionList() {
             options={dustLevelOptions}
             value={filters.dustLevel}
           />
-          <label className="space-y-1">
+          <label className="min-w-0 space-y-1">
             <span className="text-xs font-semibold uppercase text-ink-500">Sort</span>
             <select
-              className="h-10 w-full rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
+              className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
               onChange={(event) => setSortBy(event.target.value as CollectionSortOption)}
               value={sortBy}
             >
@@ -235,10 +235,10 @@ interface FilterSelectProps {
 
 function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
   return (
-    <label className="space-y-1">
+    <label className="min-w-0 space-y-1">
       <span className="text-xs font-semibold uppercase text-ink-500">{label}</span>
       <select
-        className="h-10 w-full rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
+        className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
         onChange={(event) => onChange(event.target.value)}
         value={value}
       >
