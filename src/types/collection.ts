@@ -31,6 +31,24 @@ export type CollectionReason =
 
 export type DustLevel = 'fresh' | 'light' | 'dusty' | 'stale' | 'buried';
 
+export type CollectionEventType =
+  | 'opened'
+  | 'processed'
+  | 'archived'
+  | 'postponed'
+  | 'deleted'
+  | 'abandoned'
+  | 'converted'
+  | 'note_added';
+
+export interface CollectionHistoryEntry {
+  id: string;
+  itemId: string;
+  type: CollectionEventType;
+  createdAt: string;
+  note?: string;
+}
+
 export interface CollectionItem {
   id: string;
   title: string;
@@ -43,6 +61,7 @@ export interface CollectionItem {
   collectedAt: string;
   lastOpenedAt?: string;
   lastReviewedAt?: string;
+  processedAt?: string;
   expiresAt?: string;
   estimatedMinutes?: number;
   importance: 1 | 2 | 3 | 4 | 5;

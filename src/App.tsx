@@ -14,7 +14,7 @@ export default function App() {
       <Route element={<AppShell />}>
         <Route index element={<Dashboard />} />
         <Route path="collections" element={<CollectionList />} />
-        <Route path="collections/:itemId" element={<ItemDetail />} />
+        <Route path="collections/:id" element={<ItemDetail />} />
         <Route path="import" element={<ImportPage />} />
         <Route path="stats" element={<StatsPage />} />
         <Route path="settings" element={<SettingsPage />} />

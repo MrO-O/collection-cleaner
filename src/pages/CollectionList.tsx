@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { mockItems } from '../data/mockItems';
+import { useCollections } from '../store/useCollections';
 import type {
   CollectionReason,
   CollectionStatus,
@@ -78,11 +78,12 @@ function formatDate(value: string): string {
 }
 
 export function CollectionList() {
+  const { items } = useCollections();
   const [filters, setFilters] = useState<CollectionListFilters>(defaultCollectionListFilters);
   const [sortBy, setSortBy] = useState<CollectionSortOption>('dust_score_desc');
   const visibleItems = useMemo(
-    () => getCollectionListItems(mockItems, filters, sortBy),
-    [filters, sortBy],
+    () => getCollectionListItems(items, filters, sortBy),
+    [filters, items, sortBy],
   );
 
   function updateFilter<Key extends keyof CollectionListFilters>(
@@ -98,7 +99,7 @@ export function CollectionList() {
         <div>
           <h3 className="text-xl font-semibold">Collection list</h3>
           <p className="mt-1 text-sm text-ink-500">
-            {visibleItems.length} of {mockItems.length} mock items shown.
+            {visibleItems.length} of {items.length} mock items shown.
           </p>
         </div>
         <button

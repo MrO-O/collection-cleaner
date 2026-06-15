@@ -1,23 +1,24 @@
 import { Link } from 'react-router-dom';
 
-import { mockItems } from '../data/mockItems';
+import { useCollections } from '../store/useCollections';
 import { calculateDustScore, getDustLevel, isExpired, sortByDustScore } from '../utils/dustScore';
 
 export function Dashboard() {
-  const staleItems = sortByDustScore(mockItems).map((item) => ({
+  const { items } = useCollections();
+  const staleItems = sortByDustScore(items).map((item) => ({
     item,
     dustScore: calculateDustScore(item),
     dustLevel: getDustLevel(item),
   }));
   const topItem = staleItems[0];
-  const expiredCount = mockItems.filter((item) => isExpired(item)).length;
+  const expiredCount = items.filter((item) => isExpired(item)).length;
 
   return (
     <div className="space-y-6">
       <section className="grid gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-stone-200 bg-white p-5">
           <p className="text-sm text-ink-500">Mock items</p>
-          <p className="mt-3 text-3xl font-semibold">{mockItems.length}</p>
+          <p className="mt-3 text-3xl font-semibold">{items.length}</p>
         </div>
         <div className="rounded-lg border border-stone-200 bg-white p-5">
           <p className="text-sm text-ink-500">Highest dust score</p>
