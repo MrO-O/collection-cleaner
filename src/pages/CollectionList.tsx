@@ -78,7 +78,7 @@ function formatDate(value: string): string {
 }
 
 export function CollectionList() {
-  const { items } = useCollections();
+  const { error, items, loading } = useCollections();
   const [filters, setFilters] = useState<CollectionListFilters>(defaultCollectionListFilters);
   const [sortBy, setSortBy] = useState<CollectionSortOption>('dust_score_desc');
   const visibleItems = useMemo(
@@ -91,6 +91,14 @@ export function CollectionList() {
     value: CollectionListFilters[Key],
   ) {
     setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  if (loading) {
+    return <PageState title="Loading collections" description="Reading local IndexedDB data..." />;
+  }
+
+  if (error) {
+    return <PageState title="Collection storage error" description={error} />;
   }
 
   return (
@@ -281,6 +289,15 @@ function MetaItem({ label, value }: { label: string; value: string }) {
     <div>
       <dt className="text-xs font-semibold uppercase text-ink-500">{label}</dt>
       <dd className="mt-1 font-medium text-ink-950">{value}</dd>
+    </div>
+  );
+}
+
+function PageState({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="rounded-lg border border-stone-200 bg-white p-6">
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-ink-500">{description}</p>
     </div>
   );
 }

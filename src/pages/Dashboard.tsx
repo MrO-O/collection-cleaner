@@ -4,7 +4,16 @@ import { useCollections } from '../store/useCollections';
 import { calculateDustScore, getDustLevel, isExpired, sortByDustScore } from '../utils/dustScore';
 
 export function Dashboard() {
-  const { items } = useCollections();
+  const { error, items, loading } = useCollections();
+
+  if (loading) {
+    return <PageState title="Loading collections" description="Reading local IndexedDB data..." />;
+  }
+
+  if (error) {
+    return <PageState title="Collection storage error" description={error} />;
+  }
+
   const staleItems = sortByDustScore(items).map((item) => ({
     item,
     dustScore: calculateDustScore(item),
@@ -57,6 +66,15 @@ export function Dashboard() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+function PageState({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="rounded-lg border border-stone-200 bg-white p-6">
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-ink-500">{description}</p>
     </div>
   );
 }

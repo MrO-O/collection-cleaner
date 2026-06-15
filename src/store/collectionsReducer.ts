@@ -18,6 +18,7 @@ interface BaseCollectionAction {
 }
 
 export type CollectionsAction =
+  | { type: 'hydrate'; state: CollectionsState }
   | ({ type: 'openItem' } & BaseCollectionAction)
   | ({ type: 'markProcessed' } & BaseCollectionAction)
   | ({ type: 'archiveItem' } & BaseCollectionAction)
@@ -27,7 +28,9 @@ export type CollectionsAction =
   | ({ type: 'convertItem' } & BaseCollectionAction)
   | ({ type: 'addNote'; note: string } & BaseCollectionAction);
 
-const actionEventType: Record<CollectionsAction['type'], CollectionEventType> = {
+export type MutatingCollectionsAction = Exclude<CollectionsAction, { type: 'hydrate' }>;
+
+const actionEventType: Record<MutatingCollectionsAction['type'], CollectionEventType> = {
   openItem: 'opened',
   markProcessed: 'processed',
   archiveItem: 'archived',
@@ -44,7 +47,7 @@ function addDays(isoDate: string, days: number): string {
   return date.toISOString();
 }
 
-function createHistoryEntry(action: CollectionsAction): CollectionHistoryEntry {
+function createHistoryEntry(action: MutatingCollectionsAction): CollectionHistoryEntry {
   return {
     id: action.eventId,
     itemId: action.itemId,
@@ -54,7 +57,9 @@ function createHistoryEntry(action: CollectionsAction): CollectionHistoryEntry {
   };
 }
 
-function nextStatusForAction(actionType: CollectionsAction['type']): CollectionStatus | undefined {
+function nextStatusForAction(
+  actionType: MutatingCollectionsAction['type'],
+): CollectionStatus | undefined {
   if (actionType === 'markProcessed') {
     return 'processed';
   }
@@ -78,7 +83,7 @@ function nextStatusForAction(actionType: CollectionsAction['type']): CollectionS
   return undefined;
 }
 
-function updateItem(item: CollectionItem, action: CollectionsAction): CollectionItem {
+function updateItem(item: CollectionItem, action: MutatingCollectionsAction): CollectionItem {
   if (action.type === 'openItem') {
     return { ...item, lastOpenedAt: action.at };
   }
@@ -110,6 +115,10 @@ export function collectionsReducer(
   state: CollectionsState,
   action: CollectionsAction,
 ): CollectionsState {
+  if (action.type === 'hydrate') {
+    return action.state;
+  }
+
   const itemExists = state.items.some((item) => item.id === action.itemId);
 
   if (!itemExists) {

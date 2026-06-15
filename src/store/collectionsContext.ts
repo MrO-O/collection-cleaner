@@ -15,6 +15,8 @@ export interface CollectionsActions {
 export interface CollectionsContextValue {
   items: CollectionItem[];
   history: CollectionHistoryEntry[];
+  loading: boolean;
+  error: string | null;
   getItemById: (itemId: string) => CollectionItem | undefined;
   getHistoryForItem: (itemId: string) => CollectionHistoryEntry[];
   actions: CollectionsActions;
