@@ -1,26 +1,51 @@
-export type ContentType = 'article' | 'video' | 'product' | 'course' | 'paper' | 'webpage' | 'other';
+export type ContentType =
+  | 'article'
+  | 'video'
+  | 'product'
+  | 'course'
+  | 'paper'
+  | 'repo'
+  | 'image'
+  | 'note'
+  | 'other';
 
-export type CollectionStatus = 'unread' | 'inProgress' | 'archived' | 'deleted' | 'reviewed';
+export type CollectionStatus =
+  | 'new'
+  | 'cooling'
+  | 'pending'
+  | 'processed'
+  | 'archived'
+  | 'deleted'
+  | 'abandoned'
+  | 'converted';
 
 export type CollectionReason =
-  | 'learnLater'
-  | 'buyLater'
+  | 'read_later'
+  | 'learn_later'
+  | 'buy_later'
   | 'reference'
-  | 'research'
-  | 'work'
   | 'inspiration'
-  | 'unsure';
+  | 'fear_of_losing'
+  | 'interesting'
+  | 'unknown';
+
+export type DustLevel = 'fresh' | 'light' | 'dusty' | 'stale' | 'buried';
 
 export interface CollectionItem {
   id: string;
   title: string;
-  url: string;
+  url?: string;
+  description?: string;
   type: ContentType;
   status: CollectionStatus;
   reason: CollectionReason;
   source: string;
-  addedAt: string;
+  collectedAt: string;
   lastOpenedAt?: string;
+  lastReviewedAt?: string;
+  expiresAt?: string;
+  estimatedMinutes?: number;
+  importance: 1 | 2 | 3 | 4 | 5;
   tags: string[];
   notes?: string;
 }
