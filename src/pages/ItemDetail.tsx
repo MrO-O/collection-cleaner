@@ -80,6 +80,12 @@ export function ItemDetail() {
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
+          <Link
+            className="rounded-md border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-ink-700 transition hover:border-emerald-800 hover:text-emerald-900"
+            to={`/collections/${item.id}/edit`}
+          >
+            Edit
+          </Link>
           {item.url ? (
             <button
               className="rounded-md bg-emerald-900 px-3 py-2 text-sm font-medium text-white"

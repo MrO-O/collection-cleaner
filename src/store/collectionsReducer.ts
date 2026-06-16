@@ -19,6 +19,8 @@ interface BaseCollectionAction {
 
 export type CollectionsAction =
   | { type: 'hydrate'; state: CollectionsState }
+  | ({ type: 'createCollection'; item: CollectionItem } & BaseCollectionAction)
+  | ({ type: 'updateCollection'; item: CollectionItem } & BaseCollectionAction)
   | ({ type: 'openItem' } & BaseCollectionAction)
   | ({ type: 'markProcessed' } & BaseCollectionAction)
   | ({ type: 'archiveItem' } & BaseCollectionAction)
@@ -31,6 +33,8 @@ export type CollectionsAction =
 export type MutatingCollectionsAction = Exclude<CollectionsAction, { type: 'hydrate' }>;
 
 const actionEventType: Record<MutatingCollectionsAction['type'], CollectionEventType> = {
+  createCollection: 'created',
+  updateCollection: 'updated',
   openItem: 'opened',
   markProcessed: 'processed',
   archiveItem: 'archived',
@@ -119,10 +123,30 @@ export function collectionsReducer(
     return action.state;
   }
 
+  if (action.type === 'createCollection') {
+    const itemExists = state.items.some((item) => item.id === action.itemId);
+
+    if (itemExists) {
+      return state;
+    }
+
+    return {
+      items: [action.item, ...state.items],
+      history: [...state.history, createHistoryEntry(action)],
+    };
+  }
+
   const itemExists = state.items.some((item) => item.id === action.itemId);
 
   if (!itemExists) {
     return state;
+  }
+
+  if (action.type === 'updateCollection') {
+    return {
+      items: state.items.map((item) => (item.id === action.itemId ? action.item : item)),
+      history: [...state.history, createHistoryEntry(action)],
+    };
   }
 
   return {

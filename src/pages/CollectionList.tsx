@@ -110,16 +110,24 @@ export function CollectionList() {
             {visibleItems.length} of {items.length} mock items shown.
           </p>
         </div>
-        <button
-          className="w-fit rounded-md border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-ink-700 transition hover:border-emerald-800 hover:text-emerald-900"
-          onClick={() => {
-            setFilters(defaultCollectionListFilters);
-            setSortBy('dust_score_desc');
-          }}
-          type="button"
-        >
-          Reset
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            className="rounded-md bg-emerald-900 px-3 py-2 text-sm font-medium text-white"
+            to="/collections/new"
+          >
+            Add collection
+          </Link>
+          <button
+            className="w-fit rounded-md border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-ink-700 transition hover:border-emerald-800 hover:text-emerald-900"
+            onClick={() => {
+              setFilters(defaultCollectionListFilters);
+              setSortBy('dust_score_desc');
+            }}
+            type="button"
+          >
+            Reset
+          </button>
+        </div>
       </div>
 
       <section className="rounded-lg border border-stone-200 bg-white p-4">

@@ -1,8 +1,14 @@
 import { createContext } from 'react';
 
-import type { CollectionHistoryEntry, CollectionItem } from '../types/collection';
+import type {
+  CollectionHistoryEntry,
+  CollectionItem,
+  CollectionItemInput,
+} from '../types/collection';
 
 export interface CollectionsActions {
+  createCollection: (input: CollectionItemInput) => Promise<string>;
+  updateCollection: (itemId: string, input: CollectionItemInput) => Promise<boolean>;
   openItem: (itemId: string) => void;
   markProcessed: (itemId: string) => void;
   archiveItem: (itemId: string) => void;

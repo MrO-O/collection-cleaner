@@ -107,6 +107,49 @@ describe('collectionsRepository', () => {
     expect(history[0].type).toBe('postponed');
   });
 
+  it('persists created items and created history entries', async () => {
+    const newItem: CollectionItem = { ...baseItem, id: 'item-created', title: 'Created item' };
+
+    await repository.persistCollectionAction(
+      { items: [], history: [] },
+      {
+        type: 'createCollection',
+        itemId: 'item-created',
+        item: newItem,
+        at: '2026-06-15T10:00:00.000Z',
+        eventId: 'event-created',
+      },
+    );
+    const item = await repository.getCollectionById('item-created');
+    const history = await repository.getCollectionHistory('item-created');
+
+    expect(item?.title).toBe('Created item');
+    expect(history[0].type).toBe('created');
+  });
+
+  it('persists edited items and updated history entries', async () => {
+    await repository.saveCollection(baseItem);
+    const updatedItem: CollectionItem = { ...baseItem, title: 'Edited item' };
+
+    await repository.persistCollectionAction(
+      { items: [baseItem], history: [] },
+      {
+        type: 'updateCollection',
+        itemId: 'item-1',
+        item: updatedItem,
+        at: '2026-06-15T10:00:00.000Z',
+        eventId: 'event-updated',
+      },
+    );
+    const item = await repository.getCollectionById('item-1');
+    const history = await repository.getCollectionHistory('item-1');
+
+    expect(item?.id).toBe('item-1');
+    expect(item?.collectedAt).toBe(baseItem.collectedAt);
+    expect(item?.title).toBe('Edited item');
+    expect(history[0].type).toBe('updated');
+  });
+
   it('handles actions for missing items without throwing', async () => {
     await repository.saveCollection(baseItem);
 

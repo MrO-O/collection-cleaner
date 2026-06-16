@@ -2,6 +2,7 @@ import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from
 
 import { mockItems } from '../data/mockItems';
 import { collectionsRepository } from '../db/collectionsRepository';
+import { createCollectionFromInput, updateCollectionFromInput } from '../utils/collectionForm';
 import {
   collectionsReducer,
   getItemHistory,
@@ -38,6 +39,14 @@ function createAction(
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Unknown collection storage error';
+}
+
+function createCollectionId(): string {
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `item-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 export function CollectionsProvider({ children }: { children: ReactNode }) {
@@ -84,12 +93,12 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  async function runAction(action: MutatingCollectionsAction) {
+  async function runAction(action: MutatingCollectionsAction): Promise<boolean> {
     const currentState = stateRef.current;
     const nextState = collectionsReducer(currentState, action);
 
     if (nextState === currentState) {
-      return;
+      return false;
     }
 
     stateRef.current = nextState;
@@ -100,11 +109,54 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
       await collectionsRepository.persistCollectionAction(currentState, action);
     } catch (persistError) {
       setError(errorMessage(persistError));
+      return false;
     }
+
+    return true;
   }
 
   const value = useMemo<CollectionsContextValue>(() => {
     const actions: CollectionsActions = {
+      createCollection: async (input) => {
+        const itemId = createCollectionId();
+        const item = createCollectionFromInput(input, {
+          id: itemId,
+          createdAt: new Date().toISOString(),
+        });
+
+        const saved = await runAction({
+          type: 'createCollection',
+          itemId,
+          item,
+          at: item.collectedAt,
+          eventId: `createCollection-${itemId}-${Date.now()}`,
+          note: 'Created collection item',
+        });
+
+        if (!saved) {
+          throw new Error('Failed to create collection item.');
+        }
+
+        return itemId;
+      },
+      updateCollection: async (itemId, input) => {
+        const existing = stateRef.current.items.find((item) => item.id === itemId);
+
+        if (!existing) {
+          return false;
+        }
+
+        const updatedItem = updateCollectionFromInput(existing, input);
+
+        return runAction({
+          type: 'updateCollection',
+          itemId,
+          item: updatedItem,
+          at: new Date().toISOString(),
+          eventId: `updateCollection-${itemId}-${Date.now()}`,
+          note: 'Updated collection item',
+        });
+      },
       openItem: (itemId) => {
         void runAction(createAction('openItem', itemId, 'Opened link'));
       },

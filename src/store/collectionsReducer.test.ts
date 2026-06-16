@@ -22,6 +22,38 @@ const baseState: CollectionsState = {
 };
 
 describe('collectionsReducer', () => {
+  it('creates an item and appends a created event', () => {
+    const item: CollectionItem = { ...baseItem, id: 'item-new', title: 'New item' };
+
+    const state = collectionsReducer(baseState, {
+      type: 'createCollection',
+      itemId: 'item-new',
+      item,
+      at: '2026-06-15T10:00:00.000Z',
+      eventId: 'event-created',
+    });
+
+    expect(state.items[0]).toBe(item);
+    expect(state.history[0]).toMatchObject({ itemId: 'item-new', type: 'created' });
+  });
+
+  it('updates an item and appends an updated event', () => {
+    const item: CollectionItem = { ...baseItem, title: 'Updated title' };
+
+    const state = collectionsReducer(baseState, {
+      type: 'updateCollection',
+      itemId: 'item-1',
+      item,
+      at: '2026-06-15T10:00:00.000Z',
+      eventId: 'event-updated',
+    });
+
+    expect(state.items[0].id).toBe('item-1');
+    expect(state.items[0].collectedAt).toBe(baseItem.collectedAt);
+    expect(state.items[0].title).toBe('Updated title');
+    expect(state.history[0].type).toBe('updated');
+  });
+
   it('marks an item as processed and sets processedAt', () => {
     const state = collectionsReducer(baseState, {
       type: 'markProcessed',

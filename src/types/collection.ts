@@ -32,6 +32,8 @@ export type CollectionReason =
 export type DustLevel = 'fresh' | 'light' | 'dusty' | 'stale' | 'buried';
 
 export type CollectionEventType =
+  | 'created'
+  | 'updated'
   | 'opened'
   | 'processed'
   | 'archived'
@@ -67,4 +69,16 @@ export interface CollectionItem {
   importance: 1 | 2 | 3 | 4 | 5;
   tags: string[];
   notes?: string;
+}
+
+export interface CollectionItemInput {
+  title: string;
+  url?: string;
+  source?: string;
+  type: ContentType;
+  reason: CollectionReason;
+  importance: 1 | 2 | 3 | 4 | 5;
+  tags: string[];
+  notes?: string;
+  expiresAt?: string;
 }

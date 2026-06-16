@@ -71,7 +71,10 @@ export function createCollectionsRepository(
         return state;
       }
 
-      const updatedItem = nextState.items.find((item) => item.id === action.itemId);
+      const updatedItem =
+        action.type === 'createCollection' || action.type === 'updateCollection'
+          ? action.item
+          : nextState.items.find((item) => item.id === action.itemId);
       const newHistoryEntry = nextState.history.find((entry) => entry.id === action.eventId);
 
       if (updatedItem) {
