@@ -1,54 +1,56 @@
 # collection-cleaner
 
-collection-cleaner 是一个本地优先的收藏内容清理工具，用于管理网页、视频、文章、商品、课程、论文等收藏内容，帮助用户识别长期未处理的“吃灰”项目，并提醒用户处理、删除、归档或复盘。
+collection-cleaner is a local-first React app for reviewing saved links, articles, videos, products, courses, papers, repositories, images, and notes. It tracks how long collection items have been idle and helps users decide whether to process, archive, delete, abandon, or convert them.
 
-当前仓库处于第一阶段：只交付可运行的前端项目骨架，不接入后端、AI API、登录、云同步或浏览器扩展。
+The app stores data locally in browser IndexedDB through Dexie. It does not use a backend, login, cloud sync, AI API, or browser extension.
 
-## 安装
+## Install
 
 ```bash
 npm install
 ```
 
-## 运行
+## Run
 
 ```bash
 npm run dev
 ```
 
-## 构建
+## Build
 
 ```bash
 npm run build
 ```
 
-## 测试
+## Test
 
 ```bash
 npm run test
 ```
 
-## 代码检查
+## Lint
 
 ```bash
 npm run lint
 ```
 
-## 当前阶段完成内容
+## Demo Data
 
-- 初始化 React + TypeScript + Vite 项目结构
-- 配置 Tailwind CSS、React Router、Vitest、ESLint、Prettier
-- 安装并预留 Dexie.js
-- 创建 App shell、顶部标题区、桌面侧边导航和移动端底部导航
-- 创建 Dashboard、CollectionList、ItemDetail、ImportPage、StatsPage、SettingsPage
-- 使用假数据展示收藏项
-- 创建 CollectionItem、ContentType、CollectionStatus、CollectionReason 类型
-- 创建 dustScore 占位计算函数和最小单元测试
+Demo data is no longer loaded automatically on startup. A new local database starts empty.
+
+Mock data is still kept in `src/data/mockItems.ts` for tests and manual demos. To load it, open Settings and choose **Load demo data**. This replaces current local data after confirmation when data already exists.
+
+## Current Stage
+
+- React, TypeScript, Vite, Tailwind CSS, React Router, Dexie, Vitest, ESLint, and Prettier are configured.
+- Collection list, detail, create, edit, status actions, and timeline are implemented.
+- Collection data and history persist in local IndexedDB.
+- Empty Dashboard and CollectionList states are supported.
+- Settings includes local data controls for clearing all data and manually loading demo data.
 
 ## TODO
 
-- 设计 Dexie 本地数据库 schema 和迁移策略
-- 实现收藏项新增、编辑、删除、归档和复盘流程
-- 实现导入解析，包括书签、CSV、JSON 或粘贴链接
-- 完善 dustScore 计算规则
-- 增加更多页面级和组件级测试
+- Import flows for bookmarks or structured files.
+- More complete cleanup planning and review workflows.
+- Better statistics and reporting views.
+- More focused component and browser-level tests.

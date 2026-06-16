@@ -9,6 +9,8 @@ import type {
 export interface CollectionsActions {
   createCollection: (input: CollectionItemInput) => Promise<string>;
   updateCollection: (itemId: string, input: CollectionItemInput) => Promise<boolean>;
+  clearAllCollections: () => Promise<void>;
+  loadDemoCollections: () => Promise<number>;
   openItem: (itemId: string) => void;
   markProcessed: (itemId: string) => void;
   archiveItem: (itemId: string) => void;

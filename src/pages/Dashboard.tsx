@@ -26,7 +26,7 @@ export function Dashboard() {
     <div className="space-y-6">
       <section className="grid gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-stone-200 bg-white p-5">
-          <p className="text-sm text-ink-500">Mock items</p>
+          <p className="text-sm text-ink-500">Local items</p>
           <p className="mt-3 text-3xl font-semibold">{items.length}</p>
         </div>
         <div className="rounded-lg border border-stone-200 bg-white p-5">
@@ -46,25 +46,41 @@ export function Dashboard() {
             View all
           </Link>
         </div>
-        <div className="divide-y divide-stone-100">
-          {staleItems.slice(0, 5).map(({ item, dustScore, dustLevel }) => (
+        {items.length === 0 ? (
+          <div className="p-6">
+            <p className="font-semibold">No local collection items yet</p>
+            <p className="mt-2 text-sm text-ink-500">
+              Your mental inventory is 0. Add the first collection item to start tracking what has
+              been waiting.
+            </p>
             <Link
-              className="flex flex-col gap-2 px-5 py-4 transition hover:bg-stone-50 sm:flex-row sm:items-center sm:justify-between"
-              key={item.id}
-              to={`/collections/${item.id}`}
+              className="mt-4 inline-flex rounded-md bg-emerald-900 px-3 py-2 text-sm font-medium text-white"
+              to="/collections/new"
             >
-              <div>
-                <p className="font-medium">{item.title}</p>
-                <p className="mt-1 text-sm text-ink-500">
-                  {item.source} / {item.type} / {item.reason}
-                </p>
-              </div>
-              <span className="w-fit rounded-md bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
-                {dustLevel} / {dustScore}
-              </span>
+              Add first collection
             </Link>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="divide-y divide-stone-100">
+            {staleItems.slice(0, 5).map(({ item, dustScore, dustLevel }) => (
+              <Link
+                className="flex flex-col gap-2 px-5 py-4 transition hover:bg-stone-50 sm:flex-row sm:items-center sm:justify-between"
+                key={item.id}
+                to={`/collections/${item.id}`}
+              >
+                <div>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="mt-1 text-sm text-ink-500">
+                    {item.source} / {item.type} / {item.reason}
+                  </p>
+                </div>
+                <span className="w-fit rounded-md bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
+                  {dustLevel} / {dustScore}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -19,7 +19,8 @@ export interface CollectionsRepository {
   appendCollectionHistory: (entry: CollectionHistoryEntry) => Promise<string>;
   getAllCollectionHistory: () => Promise<CollectionHistoryEntry[]>;
   getCollectionHistory: (itemId: string) => Promise<CollectionHistoryEntry[]>;
-  seedCollectionsIfEmpty: (mockData: CollectionItem[]) => Promise<boolean>;
+  seedDemoCollections: (demoData: CollectionItem[]) => Promise<number>;
+  clearAllCollections: () => Promise<void>;
   persistCollectionAction: (
     state: CollectionsState,
     action: MutatingCollectionsAction,
@@ -54,15 +55,19 @@ export function createCollectionsRepository(
         (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
       );
     },
-    seedCollectionsIfEmpty: async (mockData) => {
-      const count = await db.collections.count();
-
-      if (count > 0) {
-        return false;
-      }
-
-      await db.collections.bulkPut(mockData);
-      return true;
+    seedDemoCollections: async (demoData) => {
+      await db.transaction('rw', db.collections, db.history, async () => {
+        await db.history.clear();
+        await db.collections.clear();
+        await db.collections.bulkPut(demoData);
+      });
+      return demoData.length;
+    },
+    clearAllCollections: async () => {
+      await db.transaction('rw', db.collections, db.history, async () => {
+        await db.history.clear();
+        await db.collections.clear();
+      });
     },
     persistCollectionAction: async (state, action) => {
       const nextState = collectionsReducer(state, action);

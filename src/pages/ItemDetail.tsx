@@ -39,7 +39,7 @@ export function ItemDetail() {
       <div className="rounded-lg border border-stone-200 bg-white p-6">
         <h3 className="text-xl font-semibold">Collection item not found</h3>
         <p className="mt-2 text-sm text-ink-500">
-          This item may have been removed from the in-memory mock store.
+          This item may have been removed from local storage.
         </p>
         <Link className="mt-4 inline-block text-sm font-medium text-emerald-900" to="/collections">
           Back to collection list

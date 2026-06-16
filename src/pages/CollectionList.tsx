@@ -107,7 +107,7 @@ export function CollectionList() {
         <div>
           <h3 className="text-xl font-semibold">Collection list</h3>
           <p className="mt-1 text-sm text-ink-500">
-            {visibleItems.length} of {items.length} mock items shown.
+            {visibleItems.length} of {items.length} local items shown.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -130,107 +130,131 @@ export function CollectionList() {
         </div>
       </div>
 
-      <section className="rounded-lg border border-stone-200 bg-white p-4">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(220px,1.6fr)_repeat(5,minmax(0,1fr))]">
-          <label className="min-w-0 space-y-1">
-            <span className="text-xs font-semibold uppercase text-ink-500">Search</span>
-            <input
-              className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
-              onChange={(event) => updateFilter('query', event.target.value)}
-              placeholder="Title, URL, or tag"
-              type="search"
-              value={filters.query}
-            />
-          </label>
+      {items.length > 0 ? (
+        <section className="rounded-lg border border-stone-200 bg-white p-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(220px,1.6fr)_repeat(5,minmax(0,1fr))]">
+            <label className="min-w-0 space-y-1">
+              <span className="text-xs font-semibold uppercase text-ink-500">Search</span>
+              <input
+                className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
+                onChange={(event) => updateFilter('query', event.target.value)}
+                placeholder="Title, URL, or tag"
+                type="search"
+                value={filters.query}
+              />
+            </label>
 
-          <FilterSelect
-            label="Status"
-            onChange={(value) => updateFilter('status', value as CollectionListFilters['status'])}
-            options={statusOptions}
-            value={filters.status}
-          />
-          <FilterSelect
-            label="Type"
-            onChange={(value) => updateFilter('type', value as CollectionListFilters['type'])}
-            options={typeOptions}
-            value={filters.type}
-          />
-          <FilterSelect
-            label="Reason"
-            onChange={(value) => updateFilter('reason', value as CollectionListFilters['reason'])}
-            options={reasonOptions}
-            value={filters.reason}
-          />
-          <FilterSelect
-            label="Dust level"
-            onChange={(value) =>
-              updateFilter('dustLevel', value as CollectionListFilters['dustLevel'])
-            }
-            options={dustLevelOptions}
-            value={filters.dustLevel}
-          />
-          <label className="min-w-0 space-y-1">
-            <span className="text-xs font-semibold uppercase text-ink-500">Sort</span>
-            <select
-              className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
-              onChange={(event) => setSortBy(event.target.value as CollectionSortOption)}
-              value={sortBy}
-            >
-              {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </section>
+            <FilterSelect
+              label="Status"
+              onChange={(value) => updateFilter('status', value as CollectionListFilters['status'])}
+              options={statusOptions}
+              value={filters.status}
+            />
+            <FilterSelect
+              label="Type"
+              onChange={(value) => updateFilter('type', value as CollectionListFilters['type'])}
+              options={typeOptions}
+              value={filters.type}
+            />
+            <FilterSelect
+              label="Reason"
+              onChange={(value) => updateFilter('reason', value as CollectionListFilters['reason'])}
+              options={reasonOptions}
+              value={filters.reason}
+            />
+            <FilterSelect
+              label="Dust level"
+              onChange={(value) =>
+                updateFilter('dustLevel', value as CollectionListFilters['dustLevel'])
+              }
+              options={dustLevelOptions}
+              value={filters.dustLevel}
+            />
+            <label className="min-w-0 space-y-1">
+              <span className="text-xs font-semibold uppercase text-ink-500">Sort</span>
+              <select
+                className="h-10 w-full min-w-0 rounded-md border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-emerald-800 focus:ring-2 focus:ring-emerald-900/10"
+                onChange={(event) => setSortBy(event.target.value as CollectionSortOption)}
+                value={sortBy}
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </section>
+      ) : null}
 
       <div className="space-y-3">
-        {visibleItems.map((item) => {
-          const dustLevel = getDustLevel(item);
-
-          return (
+        {items.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-stone-300 bg-white p-8 text-center">
+            <p className="font-semibold">No collections yet</p>
+            <p className="mt-2 text-sm text-ink-500">
+              Add your first saved article, video, product, course, paper, repository, image, or
+              note. Browser bookmark import can come later.
+            </p>
             <Link
-              className="block rounded-lg border border-stone-200 bg-white p-4 transition hover:border-emerald-800 hover:bg-stone-50 sm:p-5"
-              key={item.id}
-              to={`/collections/${item.id}`}
+              className="mt-4 inline-flex rounded-md bg-emerald-900 px-3 py-2 text-sm font-medium text-white"
+              to="/collections/new"
             >
-              <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
-                <div className="min-w-0">
-                  <h4 className="text-base font-semibold text-ink-950 sm:text-lg">{item.title}</h4>
-                  <p className="mt-2 break-all text-sm text-ink-500">{item.url ?? item.source}</p>
-                </div>
-                <div className="flex shrink-0 flex-wrap gap-2 xl:justify-end">
-                  <Badge>{item.type}</Badge>
-                  <Badge>{item.reason}</Badge>
-                  <Badge>{item.status}</Badge>
-                  <DustBadge level={dustLevel} />
-                </div>
-              </div>
-
-              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
-                <MetaItem label="Collected" value={formatDate(item.collectedAt)} />
-                <MetaItem label="Dust days" value={`${getDustDays(item)} days`} />
-                <MetaItem label="Dust score" value={String(calculateDustScore(item))} />
-                <MetaItem label="Priority" value={`P${item.importance}`} />
-              </dl>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {item.tags.map((tag) => (
-                  <span
-                    className="rounded-md bg-stone-100 px-2 py-1 text-xs font-medium text-ink-700"
-                    key={tag}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              Add first collection
             </Link>
-          );
-        })}
+          </div>
+        ) : null}
 
-        {visibleItems.length === 0 ? (
+        {items.length > 0
+          ? visibleItems.map((item) => {
+              const dustLevel = getDustLevel(item);
+
+              return (
+                <Link
+                  className="block rounded-lg border border-stone-200 bg-white p-4 transition hover:border-emerald-800 hover:bg-stone-50 sm:p-5"
+                  key={item.id}
+                  to={`/collections/${item.id}`}
+                >
+                  <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                    <div className="min-w-0">
+                      <h4 className="text-base font-semibold text-ink-950 sm:text-lg">
+                        {item.title}
+                      </h4>
+                      <p className="mt-2 break-all text-sm text-ink-500">
+                        {item.url ?? item.source}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 flex-wrap gap-2 xl:justify-end">
+                      <Badge>{item.type}</Badge>
+                      <Badge>{item.reason}</Badge>
+                      <Badge>{item.status}</Badge>
+                      <DustBadge level={dustLevel} />
+                    </div>
+                  </div>
+
+                  <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
+                    <MetaItem label="Collected" value={formatDate(item.collectedAt)} />
+                    <MetaItem label="Dust days" value={`${getDustDays(item)} days`} />
+                    <MetaItem label="Dust score" value={String(calculateDustScore(item))} />
+                    <MetaItem label="Priority" value={`P${item.importance}`} />
+                  </dl>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {item.tags.map((tag) => (
+                      <span
+                        className="rounded-md bg-stone-100 px-2 py-1 text-xs font-medium text-ink-700"
+                        key={tag}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              );
+            })
+          : null}
+
+        {items.length > 0 && visibleItems.length === 0 ? (
           <div className="rounded-lg border border-dashed border-stone-300 bg-white p-8 text-center">
             <p className="font-semibold">No matching collection items</p>
             <p className="mt-2 text-sm text-ink-500">

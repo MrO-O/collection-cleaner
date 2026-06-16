@@ -63,8 +63,6 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       try {
-        await collectionsRepository.seedCollectionsIfEmpty(mockItems);
-
         const [items, history] = await Promise.all([
           collectionsRepository.getAllCollections(),
           collectionsRepository.getAllCollectionHistory(),
@@ -117,6 +115,37 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CollectionsContextValue>(() => {
     const actions: CollectionsActions = {
+      clearAllCollections: async () => {
+        setError(null);
+
+        try {
+          await collectionsRepository.clearAllCollections();
+          stateRef.current = emptyState;
+          dispatch({ type: 'hydrate', state: emptyState });
+        } catch (clearError) {
+          setError(errorMessage(clearError));
+          throw clearError;
+        }
+      },
+      loadDemoCollections: async () => {
+        setError(null);
+
+        try {
+          const seededCount = await collectionsRepository.seedDemoCollections(mockItems);
+          const demoState: CollectionsState = {
+            items: await collectionsRepository.getAllCollections(),
+            history: [],
+          };
+
+          stateRef.current = demoState;
+          dispatch({ type: 'hydrate', state: demoState });
+
+          return seededCount;
+        } catch (seedError) {
+          setError(errorMessage(seedError));
+          throw seedError;
+        }
+      },
       createCollection: async (input) => {
         const itemId = createCollectionId();
         const item = createCollectionFromInput(input, {

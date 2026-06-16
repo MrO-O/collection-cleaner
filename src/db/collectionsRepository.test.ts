@@ -43,26 +43,59 @@ afterEach(async () => {
 });
 
 describe('collectionsRepository', () => {
-  it('seeds mock data when the database is empty', async () => {
-    const seeded = await repository.seedCollectionsIfEmpty([baseItem]);
+  it('returns an empty list for a new database without automatic seed', async () => {
+    const items = await repository.getAllCollections();
+    const history = await repository.getAllCollectionHistory();
+
+    expect(items).toEqual([]);
+    expect(history).toEqual([]);
+  });
+
+  it('loads demo data only when explicitly requested', async () => {
+    const seededCount = await repository.seedDemoCollections([baseItem]);
     const items = await repository.getAllCollections();
 
-    expect(seeded).toBe(true);
+    expect(seededCount).toBe(1);
     expect(items).toHaveLength(1);
     expect(items[0].id).toBe('item-1');
   });
 
-  it('does not seed mock data twice when data already exists', async () => {
-    await repository.seedCollectionsIfEmpty([baseItem]);
+  it('replaces existing data when loading demo data', async () => {
+    await repository.saveCollection({ ...baseItem, id: 'item-existing', title: 'Real item' });
+    await repository.appendCollectionHistory({
+      ...openedEvent,
+      id: 'event-existing',
+      itemId: 'item-existing',
+    });
 
-    const seededAgain = await repository.seedCollectionsIfEmpty([
-      { ...baseItem, id: 'item-2', title: 'Duplicate seed candidate' },
-    ]);
+    await repository.seedDemoCollections([{ ...baseItem, id: 'item-demo', title: 'Demo item' }]);
+    const items = await repository.getAllCollections();
+    const history = await repository.getAllCollectionHistory();
+
+    expect(items).toHaveLength(1);
+    expect(items[0].id).toBe('item-demo');
+    expect(history).toHaveLength(0);
+  });
+
+  it('clears all collections and history', async () => {
+    await repository.saveCollection(baseItem);
+    await repository.appendCollectionHistory(openedEvent);
+
+    await repository.clearAllCollections();
+    const items = await repository.getAllCollections();
+    const history = await repository.getAllCollectionHistory();
+
+    expect(items).toEqual([]);
+    expect(history).toEqual([]);
+  });
+
+  it('does not restore demo data after clearing local data', async () => {
+    await repository.seedDemoCollections([baseItem]);
+    await repository.clearAllCollections();
+
     const items = await repository.getAllCollections();
 
-    expect(seededAgain).toBe(false);
-    expect(items).toHaveLength(1);
-    expect(items[0].id).toBe('item-1');
+    expect(items).toEqual([]);
   });
 
   it('persists status updates', async () => {
