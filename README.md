@@ -34,7 +34,13 @@ npm run build
 npm run preview
 ```
 
-The production build is written to `dist/`. Upload that directory to any static file host. The app uses `HashRouter`, so static hosting does not need a fallback rule for client-side routes and refreshing a detail URL will not produce a route 404.
+The production build is written to `dist/`. By default, production assets use the `/collection-cleaner/` base path. Override it for another static hosting path when needed:
+
+```bash
+VITE_BASE_PATH=/your-repository-name/ npm run build
+```
+
+The app uses `HashRouter`, so static hosting does not need a fallback rule for client-side routes and refreshing a detail URL will not produce a route 404.
 
 ### Browser bookmark
 
@@ -54,6 +60,18 @@ On a supported browser, open the app and use the browser's **Install app** or eq
 - Storage is tied to the app's browser origin.
 - Switching browsers, devices, profiles, domains, protocols, or ports does not migrate data automatically.
 - A future JSON export/import flow will provide explicit backup and migration.
+
+## Deploy to GitHub Pages / 部署到 GitHub Pages
+
+1. Create a GitHub repository and push this project to it. The included workflow runs whenever `main` is pushed.
+2. On GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. Push or merge the deployment commit into `main`. In the **Actions** tab, wait for the **Deploy to GitHub Pages** workflow to finish.
+4. Open `https://<username>.github.io/<repository-name>/`. For this repository, the expected path is `https://<username>.github.io/collection-cleaner/`.
+5. Add the deployed URL to the browser bookmark bar and use that stable URL every day. You do not need to run `npm run dev`, keep `npm run preview` running, or leave a terminal open.
+
+The workflow sets `VITE_BASE_PATH` from the GitHub repository name, so project Pages assets load from `/<repository-name>/`. Local development continues to use `/`. For a manual build or a different host path, set `VITE_BASE_PATH` to a path with leading and trailing slashes, such as `/my-repo/`. If this repository is instead named `<username>.github.io` and is deployed at the domain root, set `VITE_BASE_PATH=/` in the workflow build step.
+
+Application data remains in IndexedDB for the current browser origin. Changing the URL (including domain, protocol, or port), browser, browser profile, or computer does not migrate that data automatically. Continue using the same Pages URL for real data. A later JSON import/export feature should be used for explicit backup and migration; it is not implemented in this increment.
 
 ## Build
 

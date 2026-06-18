@@ -2,8 +2,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
-  base: './',
+export default defineConfig(({ command }) => ({
+  base: process.env.VITE_BASE_PATH ?? (command === 'build' ? '/collection-cleaner/' : '/'),
   plugins: [
     react(),
     VitePWA({
@@ -45,4 +45,4 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
   },
-});
+}));
