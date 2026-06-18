@@ -10,6 +10,7 @@ This repository is currently an early frontend skeleton; keep changes small and 
 - Install: `npm install`
 - Dev server: `npm run dev`
 - Build: `npm run build`
+- Production preview: `npm run preview`
 - Test: `npm run test`
 - Lint: `npm run lint`
 
@@ -24,6 +25,7 @@ This repository is currently an early frontend skeleton; keep changes small and 
 - `src/types/`: shared TypeScript domain types.
 - `src/utils/`: small pure utilities and their tests.
 - `src/styles/`: global Tailwind CSS entry.
+- `public/`: favicon and PWA icon assets copied into static builds.
 
 ## Working rules
 

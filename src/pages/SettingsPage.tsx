@@ -109,6 +109,30 @@ export function SettingsPage() {
           </button>
         </div>
       </section>
+
+      <section className="rounded-lg border border-stone-200 bg-white p-5">
+        <h4 className="font-semibold">Browser access</h4>
+        <p className="mt-2 text-sm text-ink-500">
+          Bookmark this page to reopen Collection Cleaner like any other browser tool. Install it
+          from your browser&apos;s app menu when PWA installation is supported.
+        </p>
+        <dl className="mt-4 space-y-3 text-sm">
+          <div>
+            <dt className="font-medium text-ink-950">Current data origin</dt>
+            <dd className="mt-1 break-all font-mono text-xs text-ink-500">
+              {window.location.origin}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium text-ink-950">Storage note</dt>
+            <dd className="mt-1 text-ink-500">
+              Data stays in this browser&apos;s IndexedDB and is isolated by origin. Avoid mixing
+              real data across different domains, ports, or browser profiles. JSON export and import
+              will be added later for migration.
+            </dd>
+          </div>
+        </dl>
+      </section>
     </div>
   );
 }
