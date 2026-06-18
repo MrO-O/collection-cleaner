@@ -46,6 +46,7 @@ function DashboardHarness({ initialItems }: { initialItems: CollectionItem[] }) 
     updateCollection: async () => true,
     clearAllCollections: async () => undefined,
     loadDemoCollections: async () => 0,
+    replaceAllCollections: async () => undefined,
     openItem: (itemId) => dispatchItemAction('openItem', itemId),
     markProcessed: (itemId) => dispatchItemAction('markProcessed', itemId),
     archiveItem: (itemId) => dispatchItemAction('archiveItem', itemId),

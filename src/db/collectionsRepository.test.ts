@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { CollectionHistoryEntry, CollectionItem } from '../types/collection';
 import { createCollectionsDb, type CollectionsDb } from './collectionsDb';
@@ -87,6 +87,43 @@ describe('collectionsRepository', () => {
 
     expect(items).toEqual([]);
     expect(history).toEqual([]);
+  });
+
+  it('replaces existing collections and history instead of appending', async () => {
+    await repository.saveCollection(baseItem);
+    await repository.appendCollectionHistory(openedEvent);
+    const restoredItem = { ...baseItem, id: 'item-restored', title: 'Restored item' };
+    const restoredEvent = {
+      ...openedEvent,
+      id: 'event-restored',
+      itemId: 'item-restored',
+    };
+
+    await repository.replaceAllCollections([restoredItem], [restoredEvent]);
+    const items = await repository.getAllCollections();
+    const history = await repository.getAllCollectionHistory();
+
+    expect(items).toEqual([restoredItem]);
+    expect(history).toEqual([restoredEvent]);
+  });
+
+  it('keeps existing data when replacement fails', async () => {
+    await repository.saveCollection(baseItem);
+    await repository.appendCollectionHistory(openedEvent);
+    const historyWrite = vi
+      .spyOn(db.history, 'bulkPut')
+      .mockRejectedValueOnce(new Error('history write failed'));
+
+    await expect(
+      repository.replaceAllCollections(
+        [{ ...baseItem, id: 'item-restored', title: 'Restored item' }],
+        [{ ...openedEvent, id: 'event-restored', itemId: 'item-restored' }],
+      ),
+    ).rejects.toThrow('history write failed');
+    historyWrite.mockRestore();
+
+    expect(await repository.getAllCollections()).toEqual([baseItem]);
+    expect(await repository.getAllCollectionHistory()).toEqual([openedEvent]);
   });
 
   it('does not restore demo data after clearing local data', async () => {

@@ -71,7 +71,15 @@ On a supported browser, open the app and use the browser's **Install app** or eq
 
 The workflow sets `VITE_BASE_PATH` from the GitHub repository name, so project Pages assets load from `/<repository-name>/`. Local development continues to use `/`. For a manual build or a different host path, set `VITE_BASE_PATH` to a path with leading and trailing slashes, such as `/my-repo/`. If this repository is instead named `<username>.github.io` and is deployed at the domain root, set `VITE_BASE_PATH=/` in the workflow build step.
 
-Application data remains in IndexedDB for the current browser origin. Changing the URL (including domain, protocol, or port), browser, browser profile, or computer does not migrate that data automatically. Continue using the same Pages URL for real data. A later JSON import/export feature should be used for explicit backup and migration; it is not implemented in this increment.
+Application data remains in IndexedDB for the current browser origin. Changing the URL (including domain, protocol, or port), browser, browser profile, or computer does not migrate that data automatically. Continue using the same Pages URL for real data, and use JSON backup and restore for explicit backup and migration.
+
+## Backup and restore / 备份与恢复
+
+Collection data and timeline history are stored in IndexedDB for the current browser origin. GitHub Pages hosts only the application code; it does not store or synchronize user collections.
+
+In **Settings → Local data**, use **Export JSON backup** to download all collection items and timeline history. Export a backup before changing browsers, devices, browser profiles, URLs, or domains, and before clearing browser data. Use **Import JSON backup** to validate and preview a backup before restoring it.
+
+Importing uses a replace-all strategy: after confirmation, it replaces all collection items and timeline history currently stored in that browser. Export the current local data first if it needs to be kept. Regular JSON backups are recommended.
 
 ## Build
 

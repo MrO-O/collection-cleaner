@@ -20,6 +20,10 @@ export interface CollectionsRepository {
   getAllCollectionHistory: () => Promise<CollectionHistoryEntry[]>;
   getCollectionHistory: (itemId: string) => Promise<CollectionHistoryEntry[]>;
   seedDemoCollections: (demoData: CollectionItem[]) => Promise<number>;
+  replaceAllCollections: (
+    items: CollectionItem[],
+    history: CollectionHistoryEntry[],
+  ) => Promise<void>;
   clearAllCollections: () => Promise<void>;
   persistCollectionAction: (
     state: CollectionsState,
@@ -62,6 +66,14 @@ export function createCollectionsRepository(
         await db.collections.bulkPut(demoData);
       });
       return demoData.length;
+    },
+    replaceAllCollections: async (items, history) => {
+      await db.transaction('rw', db.collections, db.history, async () => {
+        await db.history.clear();
+        await db.collections.clear();
+        await db.collections.bulkPut(items);
+        await db.history.bulkPut(history);
+      });
     },
     clearAllCollections: async () => {
       await db.transaction('rw', db.collections, db.history, async () => {

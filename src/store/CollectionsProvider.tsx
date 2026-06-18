@@ -146,6 +146,19 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
           throw seedError;
         }
       },
+      replaceAllCollections: async (items, history) => {
+        setError(null);
+
+        try {
+          await collectionsRepository.replaceAllCollections(items, history);
+          const restoredState: CollectionsState = { items, history };
+          stateRef.current = restoredState;
+          dispatch({ type: 'hydrate', state: restoredState });
+        } catch (restoreError) {
+          setError(errorMessage(restoreError));
+          throw restoreError;
+        }
+      },
       createCollection: async (input) => {
         const itemId = createCollectionId();
         const item = createCollectionFromInput(input, {

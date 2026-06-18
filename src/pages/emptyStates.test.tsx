@@ -19,6 +19,7 @@ const emptyCollectionsValue: CollectionsContextValue = {
     updateCollection: async () => true,
     clearAllCollections: async () => undefined,
     loadDemoCollections: async () => 0,
+    replaceAllCollections: async () => undefined,
     openItem: () => undefined,
     markProcessed: () => undefined,
     archiveItem: () => undefined,

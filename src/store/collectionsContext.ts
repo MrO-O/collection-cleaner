@@ -11,6 +11,10 @@ export interface CollectionsActions {
   updateCollection: (itemId: string, input: CollectionItemInput) => Promise<boolean>;
   clearAllCollections: () => Promise<void>;
   loadDemoCollections: () => Promise<number>;
+  replaceAllCollections: (
+    items: CollectionItem[],
+    history: CollectionHistoryEntry[],
+  ) => Promise<void>;
   openItem: (itemId: string) => void;
   markProcessed: (itemId: string) => void;
   archiveItem: (itemId: string) => void;
