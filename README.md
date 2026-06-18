@@ -45,6 +45,7 @@ Mock data is still kept in `src/data/mockItems.ts` for tests and manual demos. T
 - React, TypeScript, Vite, Tailwind CSS, React Router, Dexie, Vitest, ESLint, and Prettier are configured.
 - Collection list, detail, create, edit, status actions, and timeline are implemented.
 - Collection data and history persist in local IndexedDB.
+- Dashboard recommends up to three deterministic cleanup candidates and supports direct actions.
 - Empty Dashboard and CollectionList states are supported.
 - Settings includes local data controls for clearing all data and manually loading demo data.
 

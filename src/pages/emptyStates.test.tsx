@@ -48,7 +48,7 @@ describe('empty states', () => {
   it('renders the dashboard empty state', () => {
     renderWithCollections(<Dashboard />);
 
-    expect(screen.getByText('No local collection items yet')).toBeTruthy();
+    expect(screen.getByText('No collections yet')).toBeTruthy();
     expect(screen.getByText('Add first collection')).toBeTruthy();
   });
 });
